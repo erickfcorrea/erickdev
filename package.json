@@ -1,21 +1,20 @@
 {
   "name": "portfolio-backend",
   "version": "1.0.0",
-  "description": "",
-  "homepage": "https://github.com/erickdev/portfolio-backend#readme",
-  "bugs": {
-    "url": "https://github.com/erickdev/portfolio-backend/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/erickdev/portfolio-backend.git"
-  },
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
-  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "nodemailer": "^6.10.1",
+    "pg": "^8.16.3"
   }
 }
