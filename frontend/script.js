@@ -2,7 +2,7 @@
 const API_CONFIG = {
     // 🔴 SUBSTITUA pela URL que o Railway gerou para você
     // Exemplo: https://portfolio-erick-production-a1b2.up.railway.app
-    baseURL: 'erickdev-production.up.railway.app',
+    baseURL: 'https://erickdev-production.up.railway.app',
     endpoints: {
         feedback: '/api/feedback',
         dbStatus: '/api/db-status'
