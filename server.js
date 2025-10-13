@@ -124,7 +124,7 @@ app.post("/api/feedback", async (req, res) => {
 
         // Salva no banco
         const result = await pool.query(
-            "INSERT INTO feedback (nome, email, mensagem) VALUES ($1, $2, $3) RETURNING id, criado_em",
+            "INSERT INTO feedback (nome, email, mensagem) VALUES ($1, $2, $3) RETURNING id",
             [nome.trim(), email.toLowerCase().trim(), mensagem.trim()]
         );
 
