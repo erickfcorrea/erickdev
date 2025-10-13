@@ -220,10 +220,11 @@ contactForm.addEventListener('submit', async (e) => {
     formStatus.innerHTML = '';
 
     try {
-        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.feedback}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+const response = await fetch(`${API_BASE_URL}/api/feedback`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+});
         });
 
         const result = await response.json();
