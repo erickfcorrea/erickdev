@@ -10,20 +10,16 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configuração do PostgreSQL com variáveis de ambiente
+// Configuração do PostgreSQL CORRIGIDA
 const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_DATABASE,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-    // Configurações importantes para produção
-    ssl: process.env.NODE_ENV === 'production' ? {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
         rejectUnauthorized: false
-    } : false,
-    connectionTimeoutMillis: 5000,
+    },
+    // Força IPv4 e melhora conexão
+    connectionTimeoutMillis: 10000,
     idleTimeoutMillis: 30000,
-    max: 20, // máximo de conexões no pool
+    max: 10,
 });
 
 // Configuração CORS dinâmica
