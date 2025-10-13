@@ -1,15 +1,7 @@
 // ⚙️ CONFIGURAÇÃO DA API
-const API_CONFIG = {
-    // 🔴 SUBSTITUA pela URL que o Railway gerou para você
-    // Exemplo: https://portfolio-erick-production-a1b2.up.railway.app
-    baseURL: 'https://erickdev-production.up.railway.app',
-    endpoints: {
-        feedback: '/api/feedback',
-        dbStatus: '/api/db-status'
-    }
-};
+const API_BASE_URL = 'https://erickdev-production.up.railway.app';
 
-// Toggle mobile menu
+// Toggle mobile menu   
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const navLinks = document.querySelector('.nav-links');
 
@@ -142,7 +134,7 @@ document.querySelector('.scroll-indicator').addEventListener('click', () => {
 // Verifica conexão com backend
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.dbStatus}`);
+        const response = await fetch(`${API_BASE_URL}/api/db-status`);
         const data = await response.json();
         
         if (data.database === "connected") {
@@ -210,21 +202,15 @@ contactForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    if (formData.mensagem.length > 5000) {
-        showStatus('A mensagem é muito longa (máximo 5000 caracteres).', 'error');
-        return;
-    }
-
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     submitButton.disabled = true;
     formStatus.innerHTML = '';
 
     try {
-const response = await fetch(`${API_BASE_URL}/api/feedback`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
-});
+        const response = await fetch(`${API_BASE_URL}/api/feedback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
         });
 
         const result = await response.json();
@@ -261,26 +247,5 @@ document.getElementById('email').addEventListener('blur', function() {
         this.style.borderColor = 'red';
     } else {
         this.style.borderColor = '';
-    }
-});
-
-// Contador de caracteres
-const messageField = document.getElementById('message');
-messageField.addEventListener('input', function() {
-    const remaining = 5000 - this.value.length;
-    
-    let counter = document.getElementById('charCounter');
-    if (!counter) {
-        counter = document.createElement('small');
-        counter.id = 'charCounter';
-        counter.style.color = 'var(--text-light)';
-        this.parentElement.appendChild(counter);
-    }
-    
-    if (remaining < 100) {
-        counter.textContent = `${remaining} caracteres restantes`;
-        counter.style.color = remaining < 0 ? 'red' : 'orange';
-    } else {
-        counter.textContent = '';
     }
 });
