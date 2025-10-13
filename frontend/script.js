@@ -1,6 +1,8 @@
-// Configuração da API
+// ⚙️ CONFIGURAÇÃO DA API
 const API_CONFIG = {
-    baseURL: 'https://seu-app.up.railway.app', // URL que o Railway te deu
+    // 🔴 SUBSTITUA pela URL que o Railway gerou para você
+    // Exemplo: https://portfolio-erick-production-a1b2.up.railway.app
+    baseURL: 'erickdev-production.up.railway.app',
     endpoints: {
         feedback: '/api/feedback',
         dbStatus: '/api/db-status'
@@ -26,7 +28,6 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 const themeToggle = document.getElementById('themeToggle');
 const themeIcon = themeToggle.querySelector('i');
 
-// Check for saved theme preference or default to light
 const currentTheme = localStorage.getItem('theme') || 'light';
 if (currentTheme === 'dark') {
     document.body.classList.add('dark-mode');
@@ -48,14 +49,12 @@ themeToggle.addEventListener('click', () => {
     }
 });
 
-// Smooth scrolling for anchor links
+// Smooth scrolling
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
-
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
             window.scrollTo({
@@ -70,36 +69,26 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 const scrollToTopBtn = document.getElementById('scrollToTop');
 
 window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 300) {
-        scrollToTopBtn.style.display = 'flex';
-    } else {
-        scrollToTopBtn.style.display = 'none';
-    }
+    scrollToTopBtn.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
 });
 
 scrollToTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// Fade in animation on scroll
+// Fade in animation
 const fadeElements = document.querySelectorAll('.fade-in');
 
 const fadeInOnScroll = () => {
     fadeElements.forEach(element => {
         const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-
-        if (elementTop < window.innerHeight - elementVisible) {
+        if (elementTop < window.innerHeight - 150) {
             element.style.opacity = 1;
             element.style.transform = 'translateY(0)';
         }
     });
 };
 
-// Set initial state for fade elements
 fadeElements.forEach(element => {
     element.style.opacity = 0;
     element.style.transform = 'translateY(20px)';
@@ -109,22 +98,18 @@ fadeElements.forEach(element => {
 window.addEventListener('scroll', fadeInOnScroll);
 window.addEventListener('load', fadeInOnScroll);
 
-// Active navigation link highlighting
+// Active nav highlighting
 const sections = document.querySelectorAll('section');
 const navLinksElements = document.querySelectorAll('.nav-link');
 
 window.addEventListener('scroll', () => {
     let current = '';
-
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-
         if (scrollY >= (sectionTop - 200)) {
             current = section.getAttribute('id');
         }
     });
-
     navLinksElements.forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('href') === `#${current}`) {
@@ -133,53 +118,46 @@ window.addEventListener('scroll', () => {
     });
 });
 
-// Auto-hide header on scroll
+// Auto-hide header
 let lastScrollTop = 0;
 const header = document.querySelector('header');
 
 window.addEventListener('scroll', () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
     if (scrollTop > lastScrollTop && scrollTop > 100) {
         header.style.transform = 'translateY(-100%)';
     } else {
         header.style.transform = 'translateY(0)';
     }
-
     lastScrollTop = scrollTop;
 });
 
-// Scroll indicator click
+// Scroll indicator
 document.querySelector('.scroll-indicator').addEventListener('click', () => {
-    document.querySelector('#about').scrollIntoView({
-        behavior: 'smooth'
-    });
+    document.querySelector('#about').scrollIntoView({ behavior: 'smooth' });
 });
 
-// ========== SISTEMA DE FEEDBACK MELHORADO ==========
+// ========== SISTEMA DE FEEDBACK ==========
 
-// Verifica conexão com o backend ao carregar a página
+// Verifica conexão com backend
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.dbStatus}`);
         const data = await response.json();
         
         if (data.database === "connected") {
-            console.log("✅ Backend conectado e funcionando!");
+            console.log("✅ Backend conectado!");
         } else {
-            console.warn("⚠️ Backend online mas banco de dados desconectado");
+            console.warn("⚠️ Backend online mas banco desconectado");
         }
     } catch (error) {
-        console.error("❌ Backend não está acessível:", error);
-        console.log("💡 Certifique-se de que o servidor está rodando");
+        console.error("❌ Backend não acessível:", error);
     }
 });
 
-// Form submission melhorado
 const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('formStatus');
 
-// Função para mostrar mensagem de status
 function showStatus(message, type = 'success') {
     const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
     const bgColor = type === 'success' ? '#f0fff4' : '#fff5f5';
@@ -200,37 +178,28 @@ function showStatus(message, type = 'success') {
         </div>
     `;
     
-    // Remove a mensagem após 5 segundos para mensagens de sucesso
     if (type === 'success') {
-        setTimeout(() => {
-            formStatus.innerHTML = '';
-        }, 5000);
+        setTimeout(() => formStatus.innerHTML = '', 5000);
     }
 }
 
-// Função para validar email
 function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// Submissão do formulário
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    console.log("📄 Enviando formulário...");
 
     const submitButton = contactForm.querySelector('button[type="submit"]');
     const originalButtonContent = submitButton.innerHTML;
 
-    // Coleta os dados do formulário
     const formData = {
         nome: document.getElementById('name').value.trim(),
         email: document.getElementById('email').value.trim(),
         mensagem: `Assunto: ${document.getElementById('subject').value.trim()}\n\nMensagem: ${document.getElementById('message').value.trim()}`
     };
 
-    // Validação no frontend
+    // Validações
     if (!formData.nome || !formData.email || !formData.mensagem) {
         showStatus('Por favor, preencha todos os campos.', 'error');
         return;
@@ -242,11 +211,10 @@ contactForm.addEventListener('submit', async (e) => {
     }
 
     if (formData.mensagem.length > 5000) {
-        showStatus('A mensagem é muito longa. Máximo de 5000 caracteres.', 'error');
+        showStatus('A mensagem é muito longa (máximo 5000 caracteres).', 'error');
         return;
     }
 
-    // Desabilita o botão e mostra loading
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     submitButton.disabled = true;
     formStatus.innerHTML = '';
@@ -254,62 +222,52 @@ contactForm.addEventListener('submit', async (e) => {
     try {
         const response = await fetch(`${API_CONFIG.baseURL}${API_CONFIG.endpoints.feedback}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         });
 
         const result = await response.json();
 
         if (response.ok && result.success) {
-            console.log("✅ Feedback enviado com sucesso!");
             showStatus(result.message, 'success');
             contactForm.reset();
         } else {
             throw new Error(result.error || 'Erro ao enviar mensagem');
         }
     } catch (error) {
-        console.error("❌ Erro ao enviar feedback:", error);
+        console.error("❌ Erro:", error);
         
-        // Mensagem de erro amigável
         let errorMessage = 'Erro ao enviar mensagem. ';
         
         if (!navigator.onLine) {
-            errorMessage += 'Você está offline. Verifique sua conexão.';
+            errorMessage += 'Você está offline.';
         } else if (error.message.includes('Failed to fetch')) {
-            errorMessage += 'Servidor indisponível. Tente novamente mais tarde.';
+            errorMessage += 'Servidor indisponível.';
         } else {
             errorMessage += error.message;
         }
         
         showStatus(errorMessage, 'error');
     } finally {
-        // Restaura o botão
         submitButton.innerHTML = originalButtonContent;
         submitButton.disabled = false;
     }
 });
 
-// Adiciona validação em tempo real
+// Validação de email em tempo real
 document.getElementById('email').addEventListener('blur', function() {
     if (this.value && !isValidEmail(this.value)) {
         this.style.borderColor = 'red';
-        this.setCustomValidity('Email inválido');
     } else {
         this.style.borderColor = '';
-        this.setCustomValidity('');
     }
 });
 
-// Contador de caracteres para mensagem
+// Contador de caracteres
 const messageField = document.getElementById('message');
-const maxChars = 5000;
-
 messageField.addEventListener('input', function() {
-    const remaining = maxChars - this.value.length;
+    const remaining = 5000 - this.value.length;
     
-    // Cria ou atualiza contador
     let counter = document.getElementById('charCounter');
     if (!counter) {
         counter = document.createElement('small');

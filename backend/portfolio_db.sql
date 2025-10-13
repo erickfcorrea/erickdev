@@ -1,11 +1,10 @@
-    CREATE DATABASE portfolio_db;
 
-    \c portfolio_db;
+-- Ativa Row Level Security na tabela feedback
+ALTER TABLE feedback ENABLE ROW LEVEL SECURITY;
 
-    CREATE TABLE feedback (
-        id SERIAL PRIMARY KEY,
-        nome VARCHAR(100) NOT NULL,
-        email VARCHAR(150) NOT NULL,
-        mensagem TEXT NOT NULL,
-        criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+-- Cria política que permite INSERT público (para o formulário)
+CREATE POLICY "Allow public insert" 
+ON feedback 
+FOR INSERT 
+TO public 
+WITH CHECK (true);
