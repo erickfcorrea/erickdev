@@ -5,16 +5,12 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ✅ CORS CORRIGIDO - Permite todas as origens
+// ✅ CORS CORRETO - Permite todas as origens
 app.use(cors({
-    origin: true, // Permite qualquer origem
-    credentials: true,
+    origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Handle preflight
-app.options('*', cors());
 
 app.use(express.json());
 
@@ -38,7 +34,6 @@ app.get('/api/db-status', async (req, res) => {
         const client = await pool.connect();
         await client.query('SELECT 1');
         client.release();
-        
         res.json({ 
             database: "connected",
             message: "Banco de dados conectado com sucesso!"
@@ -59,7 +54,6 @@ app.post('/api/feedback', async (req, res) => {
     try {
         const { nome, email, mensagem } = req.body;
 
-        // Validação
         if (!nome || !email || !mensagem) {
             return res.status(400).json({
                 success: false,
@@ -67,17 +61,9 @@ app.post('/api/feedback', async (req, res) => {
             });
         }
 
-        // Query simplificada
-        const query = `
-            INSERT INTO feedback (nome, email, mensagem) 
-            VALUES ($1, $2, $3)
-        `;
+        const query = `INSERT INTO feedback (nome, email, mensagem) VALUES ($1, $2, $3)`;
+        await pool.query(query, [nome, email, mensagem]);
 
-        const values = [nome, email, mensagem];
-        await pool.query(query, values);
-
-        console.log('✅ Feedback salvo com sucesso');
-        
         res.json({
             success: true,
             message: 'Mensagem enviada com sucesso! Obrigado pelo seu feedback.'
@@ -94,6 +80,5 @@ app.post('/api/feedback', async (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
-    console.log(`📍 URL: http://localhost:${PORT}`);
-    console.log(`🌐 CORS configurado para todas as origens`);
+    console.log(`✅ CORS configurado para todas as origens`);
 });
