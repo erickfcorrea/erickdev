@@ -1,43 +1,49 @@
-// ⚙️ CONFIGURAÇÃO DA API - URL CORRETA
+// ✅ CONFIGURAÇÃO DA API - VARIÁVEL CORRETA
 const API_BASE_URL = 'https://erickdev-production.up.railway.app';
+
+console.log('✅ Script carregado! API_BASE_URL:', API_BASE_URL);
 
 // Toggle mobile menu   
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const navLinks = document.querySelector('.nav-links');
 
-mobileMenuBtn.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-});
-
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
+if (mobileMenuBtn && navLinks) {
+    mobileMenuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
     });
-});
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+        });
+    });
+}
 
 // Theme toggle
 const themeToggle = document.getElementById('themeToggle');
-const themeIcon = themeToggle.querySelector('i');
-
-const currentTheme = localStorage.getItem('theme') || 'light';
-if (currentTheme === 'dark') {
-    document.body.classList.add('dark-mode');
-    themeIcon.classList.remove('fa-moon');
-    themeIcon.classList.add('fa-sun');
-}
-
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-    if (document.body.classList.contains('dark-mode')) {
+if (themeToggle) {
+    const themeIcon = themeToggle.querySelector('i');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
         themeIcon.classList.remove('fa-moon');
         themeIcon.classList.add('fa-sun');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-        localStorage.setItem('theme', 'light');
     }
-});
+
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+}
 
 // Smooth scrolling
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -57,74 +63,45 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Scroll to top button
 const scrollToTopBtn = document.getElementById('scrollToTop');
-window.addEventListener('scroll', () => {
-    scrollToTopBtn.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
-});
-scrollToTopBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+if (scrollToTopBtn) {
+    window.addEventListener('scroll', () => {
+        scrollToTopBtn.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
+    });
+    scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
 
 // Fade in animation
 const fadeElements = document.querySelectorAll('.fade-in');
-const fadeInOnScroll = () => {
+if (fadeElements.length > 0) {
+    const fadeInOnScroll = () => {
+        fadeElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            if (elementTop < window.innerHeight - 150) {
+                element.style.opacity = 1;
+                element.style.transform = 'translateY(0)';
+            }
+        });
+    };
+    
     fadeElements.forEach(element => {
-        const elementTop = element.getBoundingClientRect().top;
-        if (elementTop < window.innerHeight - 150) {
-            element.style.opacity = 1;
-            element.style.transform = 'translateY(0)';
-        }
+        element.style.opacity = 0;
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
     });
-};
-fadeElements.forEach(element => {
-    element.style.opacity = 0;
-    element.style.transform = 'translateY(20px)';
-    element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-});
-window.addEventListener('scroll', fadeInOnScroll);
-window.addEventListener('load', fadeInOnScroll);
-
-// Active nav highlighting
-const sections = document.querySelectorAll('section');
-const navLinksElements = document.querySelectorAll('.nav-link');
-window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (scrollY >= (sectionTop - 200)) {
-            current = section.getAttribute('id');
-        }
-    });
-    navLinksElements.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// Auto-hide header
-let lastScrollTop = 0;
-const header = document.querySelector('header');
-window.addEventListener('scroll', () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    if (scrollTop > lastScrollTop && scrollTop > 100) {
-        header.style.transform = 'translateY(-100%)';
-    } else {
-        header.style.transform = 'translateY(0)';
-    }
-    lastScrollTop = scrollTop;
-});
-
-// Scroll indicator
-document.querySelector('.scroll-indicator').addEventListener('click', () => {
-    document.querySelector('#about').scrollIntoView({ behavior: 'smooth' });
-});
+    
+    window.addEventListener('scroll', fadeInOnScroll);
+    window.addEventListener('load', fadeInOnScroll);
+}
 
 // ========== SISTEMA DE FEEDBACK ==========
 const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('formStatus');
 
 function showStatus(message, type = 'success') {
+    if (!formStatus) return;
+    
     const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
     const bgColor = type === 'success' ? '#f0fff4' : '#fff5f5';
     const borderColor = type === 'success' ? 'green' : 'red';
@@ -137,7 +114,9 @@ function showStatus(message, type = 'success') {
     `;
     
     if (type === 'success') {
-        setTimeout(() => formStatus.innerHTML = '', 5000);
+        setTimeout(() => {
+            if (formStatus) formStatus.innerHTML = '';
+        }, 5000);
     }
 }
 
@@ -145,82 +124,89 @@ function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// ✅✅✅ CORRIGIDO - Verifica conexão com backend
-window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        console.log('🔍 Testando conexão com:', API_BASE_URL);
-        const response = await fetch(`${API_BASE_URL}/api/db-status`);
-        const data = await response.json();
-        
-        if (data.database === "connected") {
-            console.log("✅ Backend conectado!");
-        }
-    } catch (error) {
-        console.error("❌ Backend não acessível:", error);
-    }
-});
-
-// ✅✅✅ CORRIGIDO - Função de submit
-contactForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const submitButton = contactForm.querySelector('button[type="submit"]');
-    const originalButtonContent = submitButton.innerHTML;
-
-    const formData = {
-        nome: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        mensagem: `Assunto: ${document.getElementById('subject').value.trim()}\n\nMensagem: ${document.getElementById('message').value.trim()}`
-    };
-
-    // Validações
-    if (!formData.nome || !formData.email || !formData.mensagem) {
-        showStatus('Por favor, preencha todos os campos.', 'error');
-        return;
-    }
-
-    if (!isValidEmail(formData.email)) {
-        showStatus('Por favor, insira um email válido.', 'error');
-        return;
-    }
-
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-    submitButton.disabled = true;
-
-    try {
-        console.log('🎯 Enviando para:', `${API_BASE_URL}/api/feedback`);
-        
-        // ✅✅✅ CORRIGIDO - Usa API_BASE_URL corretamente
-        const response = await fetch(`${API_BASE_URL}/api/feedback`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+// ✅ VERIFICA CONEXÃO COM BACKEND
+if (contactForm) {
+    console.log('🔍 Testando conexão com backend...');
+    
+    fetch(`${API_BASE_URL}/api/db-status`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('✅ Backend status:', data);
+        })
+        .catch(error => {
+            console.error('❌ Erro no backend:', error);
         });
 
-        const result = await response.json();
-        console.log('📨 Resposta:', result);
+    // ✅ FORMULÁRIO CORRETO
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        if (response.ok && result.success) {
-            showStatus('✅ ' + result.message, 'success');
-            contactForm.reset();
-        } else {
-            throw new Error(result.error || 'Erro ao enviar mensagem');
+        const submitButton = contactForm.querySelector('button[type="submit"]');
+        const originalButtonContent = submitButton.innerHTML;
+
+        const formData = {
+            nome: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            mensagem: `Assunto: ${document.getElementById('subject').value.trim()}\n\nMensagem: ${document.getElementById('message').value.trim()}`
+        };
+
+        // Validações
+        if (!formData.nome || !formData.email || !formData.mensagem) {
+            showStatus('Por favor, preencha todos os campos.', 'error');
+            return;
         }
 
-    } catch (error) {
-        console.error('❌ Erro:', error);
-        showStatus('❌ Erro ao enviar mensagem. Tente novamente.', 'error');
-    } finally {
-        submitButton.innerHTML = originalButtonContent;
-        submitButton.disabled = false;
-    }
-});
+        if (!isValidEmail(formData.email)) {
+            showStatus('Por favor, insira um email válido.', 'error');
+            return;
+        }
 
-// Validação de email em tempo real
-document.getElementById('email').addEventListener('blur', function() {
-    if (this.value && !isValidEmail(this.value)) {
-        this.style.borderColor = 'red';
-    } else {
-        this.style.borderColor = '';
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        submitButton.disabled = true;
+
+        try {
+            console.log('📤 Enviando para:', `${API_BASE_URL}/api/feedback`);
+            
+            const response = await fetch(`${API_BASE_URL}/api/feedback`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            console.log('📨 Status da resposta:', response.status);
+            
+            const result = await response.json();
+            console.log('📨 Resposta completa:', result);
+
+            if (response.ok && result.success) {
+                showStatus('✅ ' + result.message, 'success');
+                contactForm.reset();
+            } else {
+                throw new Error(result.error || 'Erro ao enviar mensagem');
+            }
+
+        } catch (error) {
+            console.error('❌ Erro no envio:', error);
+            showStatus('❌ Erro ao enviar mensagem: ' + error.message, 'error');
+        } finally {
+            submitButton.innerHTML = originalButtonContent;
+            submitButton.disabled = false;
+        }
+    });
+
+    // Validação de email em tempo real
+    const emailField = document.getElementById('email');
+    if (emailField) {
+        emailField.addEventListener('blur', function() {
+            if (this.value && !isValidEmail(this.value)) {
+                this.style.borderColor = 'red';
+            } else {
+                this.style.borderColor = '';
+            }
+        });
     }
-});
+}
+
+console.log('🎯 Sistema de feedback carregado e pronto!');
