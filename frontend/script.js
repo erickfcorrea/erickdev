@@ -1,5 +1,9 @@
 // ⚙️ CONFIGURAÇÃO DA API
+// ✅ CORRETO - URL completa e correta
 const API_BASE_URL = 'https://erickdev-production.up.railway.app';
+
+// E verifique se não há esta linha conflitante em outro lugar:
+// REMOVA se existir: const API_CONFIG = { ... };
 
 // Toggle mobile menu   
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
