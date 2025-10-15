@@ -12,18 +12,14 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
-// Handle preflight requests
 app.options('*', cors());
-
 app.use(express.json());
 
-// Configuração do PostgreSQL
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// Health check
 app.get('/', (req, res) => {
     res.json({ 
         message: 'API Portfolio - Online!',
@@ -32,7 +28,6 @@ app.get('/', (req, res) => {
     });
 });
 
-// Status do banco
 app.get('/api/db-status', async (req, res) => {
     try {
         const client = await pool.connect();
@@ -52,14 +47,12 @@ app.get('/api/db-status', async (req, res) => {
     }
 });
 
-// Endpoint de feedback
 app.post('/api/feedback', async (req, res) => {
     console.log('📥 Feedback recebido:', req.body);
     
     try {
         const { nome, email, mensagem } = req.body;
 
-        // Validação
         if (!nome || !email || !mensagem) {
             return res.status(400).json({
                 success: false,
@@ -67,7 +60,6 @@ app.post('/api/feedback', async (req, res) => {
             });
         }
 
-        // Query simplificada
         const query = `INSERT INTO feedback (nome, email, mensagem) VALUES ($1, $2, $3)`;
         await pool.query(query, [nome, email, mensagem]);
 
@@ -90,5 +82,4 @@ app.post('/api/feedback', async (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
     console.log(`✅ CORS configurado para todas as origens (*)`);
-    console.log(`📍 URL: http://localhost:${PORT}`);
 });
