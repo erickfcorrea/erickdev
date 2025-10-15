@@ -2,14 +2,20 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copia package.json primeiro para cache de dependências
-COPY package*.json ./
+# Copia os arquivos de dependência
+COPY package.json package-lock.json ./
 
-RUN npm ci --only=production
+# Instala dependências de produção
+RUN npm ci --only=production --omit=dev
 
-# Copia o resto do código
+# Copia o código da aplicação
 COPY . .
 
-EXPOSE 3000
+# Expõe a porta
+EXPOSE 3001
 
-CMD ["npm", "start"]
+# Define a variável de ambiente
+ENV NODE_ENV=production
+
+# Comando para iniciar a aplicação
+CMD ["node", "server.js"]
