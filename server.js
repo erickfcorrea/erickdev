@@ -1,17 +1,6 @@
 const express = require('express');
-const compression = require("compression");
-const helmet = require("helmet");
 const cors = require("cors");
-const dotenv = require("dotenv");
-const path = require("path");
-const bodyParser = require("body-parser");
 const { Pool } = require("pg");
-
-dotenv.config();
-
-// ✅ Adicione compatibilidade
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
