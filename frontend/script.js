@@ -1,4 +1,4 @@
-// ⚙️ CONFIGURAÇÃO DA API - URL CORRETA E FINAL
+// ⚙️ CONFIGURAÇÃO DA API - URL CORRETA
 const API_BASE_URL = 'https://erickdev-production.up.railway.app';
 
 // Toggle mobile menu   
@@ -145,7 +145,7 @@ function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// Verifica conexão com backend
+// ✅✅✅ CORRIGIDO - Verifica conexão com backend
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         console.log('🔍 Testando conexão com:', API_BASE_URL);
@@ -160,6 +160,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// ✅✅✅ CORRIGIDO - Função de submit
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -189,6 +190,7 @@ contactForm.addEventListener('submit', async (e) => {
     try {
         console.log('🎯 Enviando para:', `${API_BASE_URL}/api/feedback`);
         
+        // ✅✅✅ CORRIGIDO - Usa API_BASE_URL corretamente
         const response = await fetch(`${API_BASE_URL}/api/feedback`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
