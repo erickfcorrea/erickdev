@@ -1,11 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
-
-import express from "express";
 import bodyParser from "body-parser";
-import { Pool } from "pg";
-import cors from "cors";
 import dotenv from "dotenv";
 
 // ✅ Adicione compatibilidade
