@@ -1,9 +1,5 @@
-// ⚙️ CONFIGURAÇÃO DA API
-// ✅ CORRETO - URL completa e correta
+// ⚙️ CONFIGURAÇÃO DA API - URL CORRETA E FINAL
 const API_BASE_URL = 'https://erickdev-production.up.railway.app';
-
-// E verifique se não há esta linha conflitante em outro lugar:
-// REMOVA se existir: const API_CONFIG = { ... };
 
 // Toggle mobile menu   
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -13,7 +9,6 @@ mobileMenuBtn.addEventListener('click', () => {
     navLinks.classList.toggle('active');
 });
 
-// Close mobile menu when clicking on a link
 document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
         navLinks.classList.remove('active');
@@ -33,7 +28,6 @@ if (currentTheme === 'dark') {
 
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
-
     if (document.body.classList.contains('dark-mode')) {
         themeIcon.classList.remove('fa-moon');
         themeIcon.classList.add('fa-sun');
@@ -63,18 +57,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Scroll to top button
 const scrollToTopBtn = document.getElementById('scrollToTop');
-
 window.addEventListener('scroll', () => {
     scrollToTopBtn.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
 });
-
 scrollToTopBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // Fade in animation
 const fadeElements = document.querySelectorAll('.fade-in');
-
 const fadeInOnScroll = () => {
     fadeElements.forEach(element => {
         const elementTop = element.getBoundingClientRect().top;
@@ -84,20 +75,17 @@ const fadeInOnScroll = () => {
         }
     });
 };
-
 fadeElements.forEach(element => {
     element.style.opacity = 0;
     element.style.transform = 'translateY(20px)';
     element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
 });
-
 window.addEventListener('scroll', fadeInOnScroll);
 window.addEventListener('load', fadeInOnScroll);
 
 // Active nav highlighting
 const sections = document.querySelectorAll('section');
 const navLinksElements = document.querySelectorAll('.nav-link');
-
 window.addEventListener('scroll', () => {
     let current = '';
     sections.forEach(section => {
@@ -117,7 +105,6 @@ window.addEventListener('scroll', () => {
 // Auto-hide header
 let lastScrollTop = 0;
 const header = document.querySelector('header');
-
 window.addEventListener('scroll', () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     if (scrollTop > lastScrollTop && scrollTop > 100) {
@@ -134,23 +121,6 @@ document.querySelector('.scroll-indicator').addEventListener('click', () => {
 });
 
 // ========== SISTEMA DE FEEDBACK ==========
-
-// Verifica conexão com backend
-window.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/db-status`);
-        const data = await response.json();
-        
-        if (data.database === "connected") {
-            console.log("✅ Backend conectado!");
-        } else {
-            console.warn("⚠️ Backend online mas banco desconectado");
-        }
-    } catch (error) {
-        console.error("❌ Backend não acessível:", error);
-    }
-});
-
 const contactForm = document.getElementById('contactForm');
 const formStatus = document.getElementById('formStatus');
 
@@ -161,15 +131,7 @@ function showStatus(message, type = 'success') {
     const textColor = type === 'success' ? 'green' : 'red';
     
     formStatus.innerHTML = `
-        <div style="
-            color: ${textColor}; 
-            background: ${bgColor}; 
-            padding: 12px; 
-            border-radius: 8px; 
-            border: 1px solid ${borderColor};
-            margin-top: 1rem;
-            animation: fadeIn 0.3s ease;
-        ">
+        <div style="color: ${textColor}; background: ${bgColor}; padding: 12px; border-radius: 8px; border: 1px solid ${borderColor}; margin-top: 1rem;">
             <i class="fas ${iconClass}"></i> ${message}
         </div>
     `;
@@ -182,6 +144,21 @@ function showStatus(message, type = 'success') {
 function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+
+// Verifica conexão com backend
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        console.log('🔍 Testando conexão com:', API_BASE_URL);
+        const response = await fetch(`${API_BASE_URL}/api/db-status`);
+        const data = await response.json();
+        
+        if (data.database === "connected") {
+            console.log("✅ Backend conectado!");
+        }
+    } catch (error) {
+        console.error("❌ Backend não acessível:", error);
+    }
+});
 
 contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -208,9 +185,10 @@ contactForm.addEventListener('submit', async (e) => {
 
     submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     submitButton.disabled = true;
-    formStatus.innerHTML = '';
 
     try {
+        console.log('🎯 Enviando para:', `${API_BASE_URL}/api/feedback`);
+        
         const response = await fetch(`${API_BASE_URL}/api/feedback`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -218,27 +196,18 @@ contactForm.addEventListener('submit', async (e) => {
         });
 
         const result = await response.json();
+        console.log('📨 Resposta:', result);
 
         if (response.ok && result.success) {
-            showStatus(result.message, 'success');
+            showStatus('✅ ' + result.message, 'success');
             contactForm.reset();
         } else {
             throw new Error(result.error || 'Erro ao enviar mensagem');
         }
+
     } catch (error) {
-        console.error("❌ Erro:", error);
-        
-        let errorMessage = 'Erro ao enviar mensagem. ';
-        
-        if (!navigator.onLine) {
-            errorMessage += 'Você está offline.';
-        } else if (error.message.includes('Failed to fetch')) {
-            errorMessage += 'Servidor indisponível.';
-        } else {
-            errorMessage += error.message;
-        }
-        
-        showStatus(errorMessage, 'error');
+        console.error('❌ Erro:', error);
+        showStatus('❌ Erro ao enviar mensagem. Tente novamente.', 'error');
     } finally {
         submitButton.innerHTML = originalButtonContent;
         submitButton.disabled = false;
