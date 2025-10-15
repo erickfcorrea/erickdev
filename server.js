@@ -10,13 +10,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Configuração do PostgreSQL CORRIGIDA
+// Configuração do PostgreSQL
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     },
-    // Força IPv4 e melhora conexão
     connectionTimeoutMillis: 10000,
     idleTimeoutMillis: 30000,
     max: 10,
@@ -25,15 +24,12 @@ const pool = new Pool({
 // Configuração CORS dinâmica
 const corsOptions = {
     origin: function (origin, callback) {
-        // Permite requisições sem origin (ex: Postman, aplicações móveis)
         if (!origin) return callback(null, true);
         
-        // Em desenvolvimento, aceita qualquer origem
         if (process.env.NODE_ENV === 'development') {
             return callback(null, true);
         }
         
-        // Em produção, verifica a lista de origens permitidas
         const allowedOrigins = process.env.ALLOWED_ORIGINS 
             ? process.env.ALLOWED_ORIGINS.split(',').map(url => url.trim())
             : [];
@@ -42,7 +38,7 @@ const corsOptions = {
             callback(null, true);
         } else {
             console.log(`⚠️ CORS bloqueou origem: ${origin}`);
-            callback(null, false); // Bloqueia mas não gera erro
+            callback(null, false);
         }
     },
     methods: ["GET", "POST", "OPTIONS"],
@@ -122,7 +118,7 @@ app.post("/api/feedback", async (req, res) => {
             });
         }
 
-        // Salva no banco
+        // Salva no banco (SEM criado_em)
         const result = await pool.query(
             "INSERT INTO feedback (nome, email, mensagem) VALUES ($1, $2, $3) RETURNING id",
             [nome.trim(), email.toLowerCase().trim(), mensagem.trim()]
@@ -139,7 +135,6 @@ app.post("/api/feedback", async (req, res) => {
     } catch (error) {
         console.error("❌ Erro ao salvar feedback:", error);
         
-        // Envia erro genérico em produção para não expor detalhes
         res.status(500).json({ 
             success: false,
             error: process.env.NODE_ENV === 'development' 
@@ -149,10 +144,9 @@ app.post("/api/feedback", async (req, res) => {
     }
 });
 
-// Rota para listar feedbacks (protegida - adicione autenticação em produção!)
+// Rota para listar feedbacks (SEM criado_em)
 app.get("/api/feedbacks", async (req, res) => {
     try {
-        // ⚠️ IMPORTANTE: Adicione autenticação antes de usar em produção!
         if (process.env.NODE_ENV === 'production') {
             return res.status(403).json({ 
                 error: "Acesso negado. Esta rota requer autenticação." 
@@ -160,7 +154,7 @@ app.get("/api/feedbacks", async (req, res) => {
         }
 
         const result = await pool.query(
-            "SELECT id, nome, email, LEFT(mensagem, 100) as preview, criado_em FROM feedback ORDER BY criado_em DESC LIMIT 50"
+            "SELECT id, nome, email, LEFT(mensagem, 100) as preview FROM feedback ORDER BY id DESC LIMIT 50"
         );
         
         res.json({
