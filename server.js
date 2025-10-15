@@ -1,8 +1,13 @@
 const express = require('express');
-const cors = require('cors');
-const { Pool } = require('pg');
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
+const compression = require("compression");
+const helmet = require("helmet");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
+const bodyParser = require("body-parser");
+const { Pool } = require("pg");
+
+dotenv.config();
 
 // ✅ Adicione compatibilidade
 import { createRequire } from 'module';
