@@ -1,5 +1,5 @@
 // ✅ CONFIGURAÇÃO DA API - VARIÁVEL CORRETA
-const API_BASE_URL = 'https://erickdev-production.up.railway.app';
+const API_BASE_URL = 'https://portfolio-backend-production-8c6a.up.railway.app';
 
 console.log('✅ Script carregado! API_BASE_URL:', API_BASE_URL);
 
